@@ -6,11 +6,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Search places using Serper Maps API
-def search_places_with_serper(query, city_name):
+def search_places_with_serper(query, city_name, page=1):
     conn = http.client.HTTPSConnection("google.serper.dev")
 
+    # Proper interpolation using f-strings
     payload = json.dumps({
         "q": f"{query} in {city_name}",
+        "page": page
     })
 
     headers = {
@@ -27,22 +29,24 @@ def search_places_with_serper(query, city_name):
     data = res.read()
     return json.loads(data.decode("utf-8"))
 
-# Master function: user gives business type + city
+# Master function: paginates through 3 pages of results
 def get_leads_from_serper(business_type, city):
-    raw_results = search_places_with_serper(business_type, city)
+    all_leads = []
 
-    leads = []
-    for place in raw_results.get("places", []):
-        leads.append({
-            "name": place.get("title"),
-            "address": place.get("address"),
-            "phone": place.get("phoneNumber"),
-            "website": place.get("website"),
-            "latitude": place.get("latitude"),
-            "longitude": place.get("longitude")
-        })
+    for page in range(1,2):  # pages 1, 2, 3
+        raw_results = search_places_with_serper(business_type, city, page)
 
-    return leads
+        for place in raw_results.get("places", []):
+            all_leads.append({
+                "name": place.get("title"),
+                "address": place.get("address"),
+                "phone": place.get("phoneNumber"),
+                "website": place.get("website"),
+                "latitude": place.get("latitude"),
+                "longitude": place.get("longitude")
+            })
 
-leads = get_leads_from_serper("Software House", "Karachi")
-print(leads)
+    return all_leads
+
+#leads = get_leads_from_serper("Software House", "Karachi")
+#print(leads)
