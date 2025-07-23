@@ -1,53 +1,53 @@
-# main.py
-
-import os
-from dotenv import load_dotenv
+from fastapi import FastAPI, Query
+from fastapi.responses import FileResponse
+from pydantic import BaseModel
+from typing import List, Dict
 from agents_workflow.serper_maps_agent import get_leads_from_serper
 from agents_workflow.website_scraper_agent import scrape_website_for_data
 from agents_workflow.company_info_extractor import extract_company_info
 from agents_workflow.export_agent import export_leads_to_csv
 from langchain_groq import ChatGroq
+import uvicorn
+import os
 
-load_dotenv()
+app = FastAPI()
 
-def main():
-    chat_model = ChatGroq(model="llama3-8b-8192", temperature=0.0)
+chat_model = ChatGroq(model="llama3-8b-8192", temperature=0.0)
 
-    print("AI Lead Generation Workflow")
+class LeadRequest(BaseModel):
+    business_type: str
+    location: str
+    lead_count: int
 
-    query = input("Enter business type (e.g., 'Software House'): ").strip()
-    location = input("Enter location (e.g., 'Karachi'): ").strip()
-
-    print("\nFetching businesses from Serper Maps...")
-    leads = get_leads_from_serper(query, location)
-    print(f"Found {len(leads)} businesses. Enriching data...\n")
-
+@app.post("/generate-leads")
+def generate_leads(request: LeadRequest):
+    leads = get_leads_from_serper(request.business_type, request.location, request.lead_count)
     enriched_leads = []
 
-    for idx, biz in enumerate(leads, 1):
-        print(f"🔗 [{idx}] Processing: {biz.get('name')}")
-
+    for biz in leads:
         website = biz.get("website")
         if not website:
-            print("No website. Skipping enrichment.\n")
             continue
 
-        scraped_text = scrape_website_for_data(website) # remove about or not
+        scraped_text = scrape_website_for_data(website)
         if not scraped_text:
-            print("Failed to scrape.\n")
             continue
 
-        llm_info = extract_company_info(scraped_text, chat_model) # change llm prompt
-
+        llm_info = extract_company_info(scraped_text, chat_model)
         final_lead = {**biz, **llm_info}
         enriched_leads.append(final_lead)
-        print("Leads enriched.\n")
-        
+
     if enriched_leads:
         csv_path = export_leads_to_csv(enriched_leads)
-        print(f"Exported {len(enriched_leads)} leads to CSV: {csv_path}")
+        return {"csv_path": csv_path, "lead_count": len(enriched_leads)}
     else:
-        print("No enriched leads to export.")
+        return {"csv_path": None, "lead_count": 0}
+
+@app.get("/download")
+def download_csv(path: str = Query(...)):
+    if os.path.exists(path):
+        return FileResponse(path, media_type='text/csv', filename=os.path.basename(path))
+    return {"error": "File not found"}
 
 if __name__ == "__main__":
-    main()
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
