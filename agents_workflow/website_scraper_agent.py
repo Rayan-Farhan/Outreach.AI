@@ -66,15 +66,12 @@ def scrape_website_for_data(url: str) -> Optional[Dict]:
         about_text = extract_about_section(url)
 
         return {
-            "raw_text": text[:5000],  # Truncate for safety
+            "raw_text": text[:5000],
             "emails": emails,
             "social_links": social_links,
-            "about_section": about_text[1000:5000]
+            "about_section": about_text[100:3000]
         }
 
     except Exception as e:
         print(f"[!] Error scraping {url}: {e}")
         return None
-
-#websiteData = scrape_website_for_data("https://contour-software.com/")
-#print(websiteData)
