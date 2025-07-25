@@ -1,5 +1,3 @@
-# agents/company_info_extractor_agent.py
-
 from langchain_core.runnables import RunnableLambda
 from langchain_core.prompts import PromptTemplate 
 from langchain_core.output_parsers import JsonOutputParser
@@ -11,7 +9,6 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-# 1. Define output schema using Pydantic
 class CompanyInfo(BaseModel):
     description: str = Field(..., description="Short description of the business")
     unique_selling_points: List[str] = Field(..., description="List of USPs")
@@ -19,10 +16,8 @@ class CompanyInfo(BaseModel):
     emails: List[str] = Field(..., description="Collected email addresses")
     social_links: List[str] = Field(..., description="Collected social profiles")
 
-# 2. Create the output parser from the schema
 parser = JsonOutputParser(pydantic_object=CompanyInfo)
 
-# 3. Template prompt with format instructions
 prompt = PromptTemplate.from_template(dedent("""
 You are an expert B2B market research and positioning assistant. Given the extracted website content, analyze and distill the information to produce compelling, structured marketing insights for outbound sales and CRM enrichment.
 
@@ -49,11 +44,9 @@ Be precise, businesslike, and avoid filler. Structure the output according to th
 {format_instructions}
 """), partial_variables={"format_instructions": parser.get_format_instructions()})
 
-# 4. LangChain chain
 def get_company_info_chain(chat_model) -> RunnableLambda:
     return prompt | chat_model | parser
 
-# 5. Call this function from your pipeline
 def extract_company_info(scraped_data: Dict, chat_model) -> Dict:
     chain = get_company_info_chain(chat_model)
     return chain.invoke(scraped_data)

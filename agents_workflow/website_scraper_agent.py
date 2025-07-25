@@ -1,5 +1,3 @@
-# agents/website_scraper_agent.py
-
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -19,7 +17,6 @@ def extract_about_section(url):
         response = requests.get(url, headers=headers, timeout=10)
         soup = BeautifulSoup(response.text, "html.parser")
 
-        # Step 1: Find a link to the About page
         about_link = None
         for a in soup.find_all("a", href=True):
             href = a['href'].lower()
@@ -27,16 +24,14 @@ def extract_about_section(url):
                 about_link = urljoin(url, href)
                 break
 
-        # Step 2: Follow that link to get About content
         if about_link:
             response = requests.get(about_link, headers=headers, timeout=10)
             about_soup = BeautifulSoup(response.text, "html.parser")
 
-            # Step 3: Try to find the main content area
             main_content = ""
             for tag in about_soup.find_all(['section', 'div', 'article'], recursive=True):
                 text = tag.get_text(strip=True, separator=' ')
-                if len(text.split()) > 100:  # Only include large blocks of text
+                if len(text.split()) > 100:
                     main_content += text + "\n\n"
 
             return main_content.strip()

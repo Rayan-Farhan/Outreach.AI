@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Search places using Serper Maps API
 def search_places_with_serper(query, city_name, page=1):
     conn = http.client.HTTPSConnection("google.serper.dev")
 
@@ -29,7 +28,6 @@ def search_places_with_serper(query, city_name, page=1):
     data = res.read()
     return json.loads(data.decode("utf-8"))
 
-# Get leads from Serper based on desired count
 def get_leads_from_serper(business_type, city, lead_count):
     pages_to_fetch = lead_count // 10
     all_leads = []

@@ -4,11 +4,6 @@ from typing import List, Dict
 from datetime import datetime
 
 def export_leads_to_csv(leads: List[Dict], export_dir: str = "exports") -> str:
-    """
-    Exports a list of lead dictionaries to a CSV file using pandas.
-    Returns the path to the saved CSV file.
-    """
-
     if not leads:
         raise ValueError("No leads to export.")
 
