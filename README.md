@@ -70,7 +70,7 @@ OutreachAI/
 ### 1. Clone the Repo
 
 ```bash
-git clone https://github.com/Rayan-Farhan/OutreachAI
+git clone https://github.com/Rayan-Farhan/Outreach.AI.git
 cd OutreachAI
 ```
 
@@ -150,3 +150,4 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 ## **Contact**
 
 If you have any questions or suggestions, feel free to reach out!
+
