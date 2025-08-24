@@ -4,11 +4,9 @@
 
 This **AI-powered lead generator** pulls live data from Google Maps, scrapes business websites for updated info, and uses **AI agents** to enrich leads with meaningful insights, all packed into a simple, one click workflow.
 
-Tired of juggling messy spreadsheets, outdated directories, or expensive lead platforms? 
+If you are tired of juggling messy spreadsheets, outdated directories, or expensive lead platforms, then let OutreachAI handle the heavy lifting in seconds!
 
-Let OutreachAI handle the heavy lifting in seconds!
-
-
+https://github.com/user-attachments/assets/0c22b0de-511d-4e9f-8ca8-2416038a668e
 
 ---
 
@@ -59,8 +57,9 @@ OutreachAI/
 │ └── init.py
 ├── main.py # FastAPI backend
 ├── app.py # Streamlit frontend
-├── requirements.txt # Dependencies
-├── .env # API keys (you create this)
+├── requirements.txt
+├── .env
+├── RUN ME.bat
 └── README.md # You’re reading it!
 ```
 
@@ -90,7 +89,7 @@ SERPER_API_KEY = your_serper_api_key
 GROQ_API_KEY = your_groq_api_key
 ```
 
-Get your Serper API Key from [here](https://groq.com)
+Get your Serper API Key from [here](https://serper.dev)
 
 Get your GROQ API KEY from [here](https://groq.com)
 
@@ -99,7 +98,7 @@ Get your GROQ API KEY from [here](https://groq.com)
 Either run everything at once using:
 
 ```bash
-runme.bat
+RUN ME.bat
 ```
 
 Or manually:
@@ -118,19 +117,16 @@ Open the Streamlit app in your browser.
 
 Enter a business type + location (e.g., Software House in Karachi) and get enriched leads in seconds!
 
+---
+
 ## Output
 
 Once the process completes, you get:
 
 - **Business info**
-
 - **Verified emails & social links**
-
 - **AI enriched insights (description, USPs, target audience)**
-
 - **Downloadable CSV with all leads**
-
-Perfect for outreach campaigns, B2B prospecting, or agencies!
 
 ---
 
